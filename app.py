@@ -8,11 +8,11 @@ st.title("Chicago Accessibility Dashboard")
 st.write("Exploring transit, school, hospital, and grocery access across Chicago neighborhoods.")
 
 conn = psycopg2.connect(
-    dbname="chicago_transit",
-    user="postgres",
-    password="postgres",
-    host="localhost",
-    port="5433"
+    dbname=st.secrets["DB_NAME"],
+    user=st.secrets["DB_USER"],
+    password=st.secrets["DB_PASSWORD"],
+    host=st.secrets["DB_HOST"],
+    port=st.secrets["DB_PORT"]
 )
 
 query = """
