@@ -1,0 +1,41 @@
+---
+title: "Chicago Accessibility Analysis"
+author: "Abiodun Emmanuel Ofobutu"
+date: "2026-08-12"
+output: html_document
+---
+
+## Overview
+
+This report analyzes accessibility to transit, schools, hospitals, and groceries across 870 Chicago neighborhoods (Census tracts), using a PostGIS spatial database built from CTA GTFS data, OpenStreetMap, and US Census data.
+
+```{r setup, include=FALSE}
+library(DBI)
+library(RPostgres)
+library(ggplot2)
+accessibility_data <- readRDS("accessibility_data.rds")
+```
+
+## Income vs. Accessibility
+
+```{r income-chart, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(accessibility_data, aes(x = median_income, y = nearby_groceries)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(title = "Median Income vs. Nearby Grocery Access",
+       x = "Median Household Income ($)", y = "Nearby Grocery Stores")
+```
+
+Grocery access shows a moderate positive correlation with income (r = 0.30), while transit, school, and hospital access show no meaningful income relationship (r near 0 for all three).
+
+## Predicting Underserved Neighborhoods
+
+A logistic regression model using population, income, density, and distance from downtown predicted whether a neighborhood falls in the bottom 25% for combined accessibility ("underserved"). All four predictors were statistically significant (p < 0.001 for three of four). Distance from downtown was the strongest driver: neighborhoods further from the city center were substantially more likely to be underserved.
+
+At a 0.35 classification threshold, the model correctly identified 59% of genuinely underserved neighborhoods (recall), with 88 false positives out of 856 zones.
+
+## Key Findings
+
+1. Food/grocery access, not transit or healthcare access, shows the clearest income disparity in Chicago.
+2. Distance from downtown is the single strongest predictor of poor accessibility, more than income or population alone.
+3. Basic demographics only partially explain accessibility gaps, pointing to historical infrastructure and geography as major factors.

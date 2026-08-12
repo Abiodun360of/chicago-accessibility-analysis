@@ -1,0 +1,9 @@
+stops.txt
+stop_times.txt
+shapes.txt
+trips.txt
+routes.txt
+calendar.txt
+*.rds
+.Rhistory
+.RData
